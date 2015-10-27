@@ -6,9 +6,6 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Random;
 
-/**
- * Created by Кирилл on 23.10.2015.
- */
 public class GammaAndShift extends JFrame{
     private JTextField sourcePhraseTextField;
     private JButton encryptButton;
@@ -30,9 +27,51 @@ public class GammaAndShift extends JFrame{
     private int[] gammaUnshifted;
     private int[] noGamma;
 
-    public static void clearAllTextFields(){
-
+    public void clearAllTextFields(){
+        sourcePhraseTextField.setText("");
+        encryptedPhraseTextField.setText("");
+        decryptedPhraseTextField.setText("");
+        binarySourcePhraseTextField.setText("");
+        afterAddingGammasField1.setText("");
+        gammaUnshiftedTextField.setText("");
     }
+
+    //returns true in case of wrong numbers found
+    public static boolean checkForWrongDigits(String inputString){
+
+        for(int i=0; i<inputString.length(); i++)
+            if((Integer.parseInt(String.valueOf(inputString.charAt(i))) == 0 ||
+                    Integer.parseInt(String.valueOf(inputString.charAt(i))) ==1)==!true)
+            {return true;}
+        return false;
+    }
+
+    //returns true in case of characters found
+    public static boolean checkForCharacters(String inputString){
+        boolean foundCharacters;
+        for(int i=0; i<inputString.length(); i++)
+            if(Character.isAlphabetic(inputString.charAt(i)))
+            {return true;}
+        return false;
+    }
+
+    public static boolean checkForWrongInput(String inputString){
+        boolean foundWrongDigits, foundCharacters, wrongInput;
+
+        foundCharacters = (checkForCharacters(inputString));
+        foundWrongDigits = false;
+        wrongInput = false;
+
+        try{
+            foundWrongDigits = (checkForWrongDigits(inputString));
+        } catch(NumberFormatException e){
+            System.out.println("Number format exception");
+        }
+        if(foundCharacters || foundWrongDigits)
+            wrongInput = true;
+        return wrongInput;
+    }
+
 
     public static boolean checkInputStringNumbers(String inputString){
         boolean foundWrongNumbers = false;
@@ -84,23 +123,25 @@ public class GammaAndShift extends JFrame{
         super("GammaAndShift");
         setContentPane(basePanel);
 
+        addString = "";
+        inputArr = new int[8];
+        gamma = new int[8];
+        inputArrWithGamma = new int[8];
+        inputArrWithGammaShifted = new int[8];
+        gammaUnshifted = new int[8];
+        noGamma = new int[8];
+
         encryptButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+
                 //в случае пустого ввода даем предупреждение
                 checkForEmptyString:
                 if(sourcePhraseTextField.getText().isEmpty()){
                     JOptionPane.showConfirmDialog(GammaAndShift.this, "Input is empty. Enter phrase to cipher");}
                 else{
                     inputString = sourcePhraseTextField.getText();
-
-                    addString = "";
-                    inputArr = new int[8];
-                    gamma = new int[8];
-                    inputArrWithGamma = new int[8];
-                    inputArrWithGammaShifted = new int[8];
-                    gammaUnshifted = new int[8];
-                    noGamma = new int[8];
 
                     for(int i=0; i<inputString.length(); i++){
                         if (Character.isAlphabetic(inputString.charAt(i))) {
@@ -109,6 +150,11 @@ public class GammaAndShift extends JFrame{
                             sourcePhraseTextField.setText("");
                             inputString = "";
                             break checkForEmptyString;
+                        } else if(checkInputStringNumbers(inputString)){
+                            JOptionPane.showMessageDialog(null, "wrong digits. input only numbers: 0 or 1", "alert",
+                                    JOptionPane.ERROR_MESSAGE);
+                            sourcePhraseTextField.setText("");
+                            inputString = "";
                         }
 
                         if(inputString.length() == 8) {
@@ -156,6 +202,7 @@ public class GammaAndShift extends JFrame{
         cleanButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                clearAllTextFields();
             }
         });
 
