@@ -162,5 +162,17 @@ public class Main {
         System.out.println("--------------");
         print(checkForWrongInput(test));
 
+        if(inputString.length() == 0)
+        {
+            print("1");
+        }
+        else if(checkForWrongInput(test)){
+            print("2");
+        }
+
+        System.out.println("--------------");
+
+
+
     }
 }
