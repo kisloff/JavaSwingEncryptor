@@ -73,7 +73,7 @@ public class GammaAndShift extends JFrame{
             for (int n = gammaUnshifted.length - MOVE, i = 0; n < gammaUnshifted.length; i++, n++)
                 gammaUnshifted[i] = inputArrWithGammaShifted[n];
 
-            for (int n = 0, i = 3; n < gammaUnshifted.length - MOVE; i++, n++)
+            for (int n = 0, i = MOVE; n < gammaUnshifted.length - MOVE; i++, n++)
                 gammaUnshifted[i] = inputArrWithGammaShifted[n];
     }
     
@@ -93,7 +93,7 @@ public class GammaAndShift extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                again:
+               // again:
                 try {
                     if (sourcePhraseTextField.getText().isEmpty()) {
                         throw new IllegalArgumentException("1");
@@ -108,9 +108,6 @@ public class GammaAndShift extends JFrame{
                     }
                     if (inputString.matches("[23456789]+"))
                         throw new IllegalArgumentException("3");
-
-                    /*if (inputString.matches("[01]+"))
-                        throw new IllegalArgumentException("4");*/
 
                     if(inputString.length() == SIZE) {
                         for (int i = 0; i < inputString.length(); i++)
@@ -194,7 +191,6 @@ public class GammaAndShift extends JFrame{
         });
 
         sourcePhraseTextField.setDocument(new FixedSizeDocument(SIZE));
-        sourcePhraseTextField.requestFocus();
         encryptedPhraseTextField.setEditable(false);
         decryptedPhraseTextField.setEditable(false);
         binarySourcePhraseTextField.setEditable(false);
