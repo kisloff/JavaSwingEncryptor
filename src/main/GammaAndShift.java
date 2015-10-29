@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GammaAndShift extends JFrame{
     private JTextField sourcePhraseTextField;
@@ -106,7 +108,10 @@ public class GammaAndShift extends JFrame{
                             throw new IllegalArgumentException("2");
                         }
                     }
-                    if (inputString.matches("[23456789]+"))
+
+                    Pattern p = Pattern.compile("[2-9]");
+                    Matcher m = p.matcher(inputString);
+                    if (m.find())
                         throw new IllegalArgumentException("3");
 
                     if(inputString.length() == SIZE) {
