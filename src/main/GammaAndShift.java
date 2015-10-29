@@ -1,8 +1,6 @@
 package main;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -43,7 +41,7 @@ public class GammaAndShift extends JFrame{
     }
 
     public void generateAddString(String inputString){
-        for(int i = (8 - inputString.length()); i>0; i--)
+        for(int i = (SIZE - inputString.length()); i>0; i--)
             addString += "0";
     }
 
@@ -91,16 +89,12 @@ public class GammaAndShift extends JFrame{
         gammaUnshifted = new int[SIZE];
         noGamma = new int[SIZE];
 
-        encryptButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-               // again:
+        encryptButton.addActionListener(e -> {
                 try {
                     if (sourcePhraseTextField.getText().isEmpty()) {
                         throw new IllegalArgumentException("1");
                     }
-                    //sourcePhraseTextField.requestFocus();
+
                     inputString = sourcePhraseTextField.getText();
 
                     for (int i = 0; i < inputString.length(); i++) {
@@ -111,6 +105,7 @@ public class GammaAndShift extends JFrame{
 
                     Pattern p = Pattern.compile("[2-9]");
                     Matcher m = p.matcher(inputString);
+
                     if (m.find())
                         throw new IllegalArgumentException("3");
 
@@ -139,23 +134,20 @@ public class GammaAndShift extends JFrame{
                 }
                 catch (IllegalArgumentException ex){
                     if(ex.getMessage() == "1"){
-                    JOptionPane.showMessageDialog(null, "Input is empty. Enter phrase to cipher. Input only numbers: " +
-                                    "0 or 1", "alert", JOptionPane.INFORMATION_MESSAGE);
-                    //break again;
+                        JOptionPane.showMessageDialog(null, "Input is empty. Enter phrase to cipher. Input only numbers: " +
+                                "0 or 1", "alert", JOptionPane.INFORMATION_MESSAGE);
                     }
                     else if(ex.getMessage() == "2") {
                         JOptionPane.showMessageDialog(null, "Input includes letters. input only numbers: 0 or 1", "alert",
                                 JOptionPane.INFORMATION_MESSAGE);
                         inputString = "";
                         clearAllTextFields();
-                       // break again;
                     }
                     else if(ex.getMessage() == "3"){
                         JOptionPane.showMessageDialog(null, "wrong digits. input only numbers: 0 or 1", "alert",
                                 JOptionPane.INFORMATION_MESSAGE);
                         inputString = "";
                         clearAllTextFields();
-                       // break again;
                     }
                     else{
                         JOptionPane.showMessageDialog(null, "Неизвестная АШЫПКА!!! Караул!!!", "alert",
@@ -164,36 +156,25 @@ public class GammaAndShift extends JFrame{
                         clearAllTextFields();
                     }
                 }
+        });
+
+        decryptButton.addActionListener(e-> {
+            if (sourcePhraseTextField.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Input is empty. Enter phrase to cipher", "info",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else if (binarySourcePhraseTextField.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Press encrypt to get ciphered phrase first!", "info",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                unshift(gammaUnshifted, inputArrWithGammaShifted);
+                removeGamma(noGamma, gammaUnshifted, gamma);
+
+                gammaUnshiftedTextField.setText(Arrays.toString(gammaUnshifted));
+                decryptedPhraseTextField.setText(Arrays.toString(noGamma));
             }
         });
 
-        decryptButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(sourcePhraseTextField.getText().isEmpty()){
-                    JOptionPane.showMessageDialog(null, "Input is empty. Enter phrase to cipher", "info",
-                            JOptionPane.INFORMATION_MESSAGE);}
-
-                else if(binarySourcePhraseTextField.getText().isEmpty()){
-                    JOptionPane.showMessageDialog(null, "Press encrypt to get ciphered phrase first!", "info",
-                            JOptionPane.INFORMATION_MESSAGE);
-                }
-                else{
-                    unshift(gammaUnshifted, inputArrWithGammaShifted);
-                    removeGamma(noGamma, gammaUnshifted, gamma);
-
-                    gammaUnshiftedTextField.setText(Arrays.toString(gammaUnshifted));
-                    decryptedPhraseTextField.setText(Arrays.toString(noGamma));
-                }
-            }
-        });
-
-        cleanButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                clearAllTextFields();
-            }
-        });
+        cleanButton.addActionListener( e -> clearAllTextFields());
 
         sourcePhraseTextField.setDocument(new FixedSizeDocument(SIZE));
         encryptedPhraseTextField.setEditable(false);
