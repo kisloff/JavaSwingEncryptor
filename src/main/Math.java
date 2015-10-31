@@ -1,112 +1,85 @@
 package main;
 
 import java.util.Random;
+import java.util.regex.Pattern;
 
 public class Math {
-    private static int MOVE = 3;
-    private static int SIZE = 8;
 
-    private String inputString;
-    private String addString;
-    private int[] inputArr;
-    private int[] gamma;
-    private int[] inputArrWithGamma;
-    private int[] inputArrWithGammaShifted;
-    private int[] gammaUnshifted;
-    private int[] noGamma;
+    public final static int MOVE = 3;
+    public final static int SIZE = 8;
 
-    public int getMOVE(){return MOVE;}
-    public int getSIZE(){return SIZE;}
+    public final static String BINARY_PATTERN = "[01]";
 
-    public void setAddString(String addString){this.addString = addString;}
-    public String getAddString(){return addString;}
+    public static String completeString(String string){
+        int diff = SIZE - string.length();
 
-    public void setInputString(String inputString){this.inputString = inputString;}
-    public String getInputString(){return inputString;}
-    public int getInputStringLength(){
-        return inputString.length();
+        if(diff > 0){
+            for(int i = diff; i > 0; i--){
+                string = "0" + string;
+            }
+        }
+        return string;
     }
 
-    public void setInputArrElements(int i, int val){
-        inputArr[i] = val;
-    }
-
-    public int[] getGamma() {return gamma;}
-    public int[] getGammaUnshifted() {return gammaUnshifted;}
-    public int[] getInputArrWithGamma() {return inputArrWithGamma;}
-    public int[] getInputArrWithGammaShifted() {return inputArrWithGammaShifted;}
-
-    public int[] getNoGamma() {return noGamma;}
-
-    public String generateAddString(){
-        for(int i = (SIZE - inputString.length()); i>0; i--)
-            addString += "0";
-        return addString;
-    }
-
-    public  void generateGamma(){
+    public static int[] generateGamma(){
+        int[] gamma = new int[SIZE];
         Random random = new Random();
-        for(int i=0; i<inputArr.length; i++)
+        for(int i = 0; i < SIZE; i++) {
             gamma[i] = random.nextInt(2);
+        }
+        return gamma;
     }
 
-    public  void addGamma(){
-        for(int i=0; i<gamma.length; i++)
-            inputArrWithGamma[i] = inputArr[i]^gamma[i];
+    public static int[] sumArrays(int[] array1, int[] array2){
+        int[] sum = new int[SIZE];
+
+        for(int i = 0; i < SIZE; i++)
+            sum[i] = array1[i]^array2[i];
+        return sum;
     }
 
-    public void removeGamma(){
-        for(int i=0; i<noGamma.length; i++)
-            noGamma[i] = gammaUnshifted[i]^gamma[i];
+    public static int[] removeGamma(int[] unshiftedInput, int[] gamma){
+        int[] decrypted = new int[SIZE];
+        for(int i = 0; i < SIZE; i++){
+            decrypted[i] = unshiftedInput[i]^gamma[i];
+        }
+        return decrypted;
     }
 
-    public void shift(){
-        for (int i = 0; i < inputArrWithGamma.length - MOVE; i++)
-            inputArrWithGammaShifted[i] = inputArrWithGamma[i + MOVE];
+    public static int[] shift(int[] array){
+        int rest = SIZE - MOVE;
+        int[] shiftedArray = new int[SIZE];
 
-        for (int i = inputArrWithGamma.length - MOVE, n = 0; i < inputArrWithGamma.length; i++, n++)
-            inputArrWithGammaShifted[i] = inputArrWithGamma[n];
+        for (int i = 0; i < rest; i++)
+            shiftedArray[i] = array[i + MOVE];
+
+        for (int i = rest, n = 0; i < SIZE; i++, n++)
+            shiftedArray[i] = array[n];
+        return shiftedArray;
     }
 
-    public  void unshift(){
-        for (int n = gammaUnshifted.length - MOVE, i = 0; n < gammaUnshifted.length; i++, n++)
-            gammaUnshifted[i] = inputArrWithGammaShifted[n];
+    public  static int[] unshift(int[] array){
+        int[] unshifted = new int[SIZE];
+        for (int n = SIZE - MOVE, i = 0; n < SIZE; i++, n++)
+            unshifted[i] = array[n];
 
-        for (int n = 0, i = MOVE; n < gammaUnshifted.length - MOVE; i++, n++)
-            gammaUnshifted[i] = inputArrWithGammaShifted[n];
+        for (int n = 0, i = MOVE; n < SIZE - MOVE; i++, n++)
+            unshifted[i] = array[n];
+        return unshifted;
     }
 
-    Math(){
-        SIZE = 8;
-        MOVE = 3;
-        addString = "";
-        inputArr = new int[SIZE];
-        gamma = new int[SIZE];
-        inputArrWithGamma = new int[SIZE];
-        inputArrWithGammaShifted = new int[SIZE];
-        gammaUnshifted = new int[SIZE];
-        noGamma = new int[SIZE];
+    public static boolean isBinary(String string){
+        return Pattern.compile(BINARY_PATTERN).matcher(string).find();
     }
 
-    Math(int size, int move){
-        SIZE = size;
-        MOVE = move;
-        addString = "";
-        inputArr = new int[SIZE];
-        gamma = new int[SIZE];
-        inputArrWithGamma = new int[SIZE];
-        inputArrWithGammaShifted = new int[SIZE];
-        gammaUnshifted = new int[SIZE];
-        noGamma = new int[SIZE];
-    }
+    public static int[] convertStringToArray(String string) {
+        int length = string.length();
+        int[] array = new int[length];
 
-    public static void main(String[] args){
-        System.out.println();
-        Math math = new Math();
-
-        System.out.println(math.getMOVE());
-        System.out.println(math.getSIZE());
-        math.setAddString("My awesome add string");
-        System.out.println(math.getAddString());
+        for (int i = 0; i < length; i++) {
+            int value = Integer.parseInt(String.valueOf(string.charAt(i)));
+            array[i] = value;
+        }
+        return array;
     }
 }
