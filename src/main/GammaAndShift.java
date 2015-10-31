@@ -17,18 +17,6 @@ public class GammaAndShift extends JFrame{
     private JTextField gammaUnshiftedTextField;
     private JButton cleanButton;
 
-    /*private static int MOVE = 3;
-    private static int SIZE = 8;
-
-    private String inputString;
-    private String addString;
-    private int[] inputArr;
-    private int[] gamma;
-    private int[] inputArrWithGamma;
-    private int[] inputArrWithGammaShifted;
-    private int[] gammaUnshifted;
-    private int[] noGamma;*/
-
     public void clearAllTextFields(){
         sourcePhraseTextField.setText("");
         encryptedPhraseTextField.setText("");
@@ -39,55 +27,10 @@ public class GammaAndShift extends JFrame{
         sourcePhraseTextField.requestFocus();
     }
 
-    /*public void generateAddString(String inputString){
-        for(int i = (SIZE - inputString.length()); i>0; i--)
-            addString += "0";
-    }
-
-    public static void generateGamma(int[] inputArr, int[] gamma){
-        Random random = new Random();
-        for(int i=0; i<inputArr.length; i++)
-            gamma[i] = random.nextInt(2);
-    }
-
-    public static void addGamma(int[] inputArrWithGamma, int[] inputArr, int[] gamma){
-        for(int i=0; i<gamma.length; i++)
-            inputArrWithGamma[i] = inputArr[i]^gamma[i];
-    }
-
-    public void removeGamma(int[] noGamma, int[] gammaUnshifted, int[] gamma){
-        for(int i=0; i<noGamma.length; i++)
-            noGamma[i] = gammaUnshifted[i]^gamma[i];
-    }
-
-    public static void shift(int[] inputArrWithGammaShifted, int[] inputArrWithGamma){
-            for (int i = 0; i < inputArrWithGamma.length - MOVE; i++)
-                inputArrWithGammaShifted[i] = inputArrWithGamma[i + MOVE];
-
-            for (int i = inputArrWithGamma.length - MOVE, n = 0; i < inputArrWithGamma.length; i++, n++)
-                inputArrWithGammaShifted[i] = inputArrWithGamma[n];
-    }
-
-    public static void unshift(int[] gammaUnshifted, int[] inputArrWithGammaShifted){
-            for (int n = gammaUnshifted.length - MOVE, i = 0; n < gammaUnshifted.length; i++, n++)
-                gammaUnshifted[i] = inputArrWithGammaShifted[n];
-
-            for (int n = 0, i = MOVE; n < gammaUnshifted.length - MOVE; i++, n++)
-                gammaUnshifted[i] = inputArrWithGammaShifted[n];
-    }*/
-    
     GammaAndShift(){
         super("GammaAndShift");
         setContentPane(basePanel);
         Math math = new Math();
-
-        /*addString = "";
-        inputArr = new int[SIZE];
-        gamma = new int[SIZE];
-        inputArrWithGamma = new int[SIZE];
-        inputArrWithGammaShifted = new int[SIZE];
-        gammaUnshifted = new int[SIZE];
-        noGamma = new int[SIZE];*/
 
         encryptButton.addActionListener(e -> {
                 try {
@@ -95,64 +38,69 @@ public class GammaAndShift extends JFrame{
                         throw new IllegalArgumentException("1");
                     }
 
-                    math.inputString = sourcePhraseTextField.getText();
+                    math.setInputString(sourcePhraseTextField.getText());
 
-                    for (int i = 0; i < inputString.length(); i++) {
-                        if (!Character.isDigit(inputString.charAt(i))) {
+                    for (int i = 0; i < math.getInputStringLength(); i++) {
+                        if (!Character.isDigit(math.getInputString().charAt(i))) {
                             throw new IllegalArgumentException("2");
                         }
                     }
 
                     Pattern p = Pattern.compile("[2-9]");
-                    Matcher m = p.matcher(inputString);
+                    Matcher m = p.matcher(math.getInputString());
 
                     if (m.find())
                         throw new IllegalArgumentException("3");
 
-                    if(inputString.length() == SIZE) {
-                        for (int i = 0; i < inputString.length(); i++)
-                            inputArr[i] = Integer.parseInt(String.valueOf(inputString.charAt(i)));
+                    //add check class
+                    if(math.getInputStringLength() == math.getSIZE()) {
+                        for (int i = 0; i < math.getInputStringLength(); i++){
+                            int val = Integer.parseInt(String.valueOf(math.getInputString().charAt(i)));
+                            math.setInputArrElements(i, val);
+                        }
                     }else{
-                        generateAddString(inputString);
-                        inputString = addString + inputString;
-                        for (int i = 0; i < SIZE; i++)
-                            inputArr[i] = Integer.parseInt(String.valueOf(inputString.charAt(i)));
+                        //math.generateAddString();
+                         math.setInputString(math.generateAddString()+math.getInputString());
+                        for (int i = 0; i < math.getInputStringLength(); i++){
+                            int val = Integer.parseInt(String.valueOf(math.getInputString().charAt(i)));
+                            math.setInputArrElements(i, val);
+                        }
                     }
 
-                    generateGamma(inputArr, gamma);
-                    addGamma(inputArrWithGamma, inputArr, gamma);
-                    shift(inputArrWithGammaShifted, inputArrWithGamma);
-                    addString = "";
+                    math.generateGamma();
+                    math.addGamma();
+                    math.shift();
+                    math.setInputString("");
 
-                    binarySourcePhraseTextField.setText(Arrays.toString(gamma));
-                    afterAddingGammasField1.setText(Arrays.toString(inputArrWithGamma));
-                    encryptedPhraseTextField.setText(Arrays.toString(inputArrWithGammaShifted));
+                    binarySourcePhraseTextField.setText(Arrays.toString(math.getGamma()));
+                    afterAddingGammasField1.setText(Arrays.toString(math.getInputArrWithGamma()));
+                    encryptedPhraseTextField.setText(Arrays.toString(math.getInputArrWithGammaShifted()));
 
                     gammaUnshiftedTextField.setText("");
                     decryptedPhraseTextField.setText("");
 
                 }
                 catch (IllegalArgumentException ex){
-                    if(ex.getMessage() == "1"){
-                        JOptionPane.showMessageDialog(null, "Input is empty. Enter phrase to cipher. Input only numbers: " +
-                                "0 or 1", "alert", JOptionPane.INFORMATION_MESSAGE);
+                    if(ex.getMessage().equals("1")){
+                        JOptionPane.showMessageDialog(null, "Input is empty. Enter phrase to cipher. Input only " +
+                                "numbers: 0 or 1", "alert", JOptionPane.INFORMATION_MESSAGE);
                     }
-                    else if(ex.getMessage() == "2") {
-                        JOptionPane.showMessageDialog(null, "Input includes letters. input only numbers: 0 or 1", "alert",
-                                JOptionPane.INFORMATION_MESSAGE);
-                        inputString = "";
+                    else if(ex.getMessage().equals("2")) {
+                        JOptionPane.showMessageDialog(null, "Input includes letters. input only numbers: 0 or 1",
+                                "alert", JOptionPane.INFORMATION_MESSAGE);
+                        math.setInputString("");
                         clearAllTextFields();
                     }
-                    else if(ex.getMessage() == "3"){
+                    else if(ex.getMessage().equals("3")){
                         JOptionPane.showMessageDialog(null, "wrong digits. input only numbers: 0 or 1", "alert",
                                 JOptionPane.INFORMATION_MESSAGE);
-                        inputString = "";
+                        math.setInputString("");
                         clearAllTextFields();
                     }
                     else{
                         JOptionPane.showMessageDialog(null, "Неизвестная АШЫПКА!!! Караул!!!", "alert",
                                 JOptionPane.INFORMATION_MESSAGE);
-                        inputString = "";
+                        math.setInputString("");
                         clearAllTextFields();
                     }
                 }
@@ -166,23 +114,22 @@ public class GammaAndShift extends JFrame{
                 JOptionPane.showMessageDialog(null, "Press encrypt to get ciphered phrase first!", "info",
                         JOptionPane.INFORMATION_MESSAGE);
             } else {
-                unshift(gammaUnshifted, inputArrWithGammaShifted);
-                removeGamma(noGamma, gammaUnshifted, gamma);
+                math.unshift();
+                math.removeGamma();
 
-                gammaUnshiftedTextField.setText(Arrays.toString(gammaUnshifted));
-                decryptedPhraseTextField.setText(Arrays.toString(noGamma));
+                gammaUnshiftedTextField.setText(Arrays.toString(math.getGammaUnshifted()));
+                decryptedPhraseTextField.setText(Arrays.toString(math.getNoGamma()));
             }
         });
 
         cleanButton.addActionListener( e -> clearAllTextFields());
 
-        sourcePhraseTextField.setDocument(new FixedSizeDocument(SIZE));
+        sourcePhraseTextField.setDocument(new FixedSizeDocument(math.getSIZE()));
         encryptedPhraseTextField.setEditable(false);
         decryptedPhraseTextField.setEditable(false);
         binarySourcePhraseTextField.setEditable(false);
         afterAddingGammasField1.setEditable(false);
         gammaUnshiftedTextField.setEditable(false);
-        inputString = sourcePhraseTextField.getText();
 
         this.setSize(500, 700);
         setVisible(true);

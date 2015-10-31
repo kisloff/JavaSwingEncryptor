@@ -2,9 +2,6 @@ package main;
 
 import java.util.Random;
 
-/**
- * Created by Кирилл on 31.10.2015.
- */
 public class Math {
     private static int MOVE = 3;
     private static int SIZE = 8;
@@ -18,28 +15,52 @@ public class Math {
     private int[] gammaUnshifted;
     private int[] noGamma;
 
-    public void generateAddString(String inputString){
-        for(int i = (SIZE - inputString.length()); i>0; i--)
-            addString += "0";
+    public int getMOVE(){return MOVE;}
+    public int getSIZE(){return SIZE;}
+
+    public void setAddString(String addString){this.addString = addString;}
+    public String getAddString(){return addString;}
+
+    public void setInputString(String inputString){this.inputString = inputString;}
+    public String getInputString(){return inputString;}
+    public int getInputStringLength(){
+        return inputString.length();
     }
 
-    public static void generateGamma(int[] inputArr, int[] gamma){
+    public void setInputArrElements(int i, int val){
+        inputArr[i] = val;
+    }
+
+    public int[] getGamma() {return gamma;}
+    public int[] getGammaUnshifted() {return gammaUnshifted;}
+    public int[] getInputArrWithGamma() {return inputArrWithGamma;}
+    public int[] getInputArrWithGammaShifted() {return inputArrWithGammaShifted;}
+
+    public int[] getNoGamma() {return noGamma;}
+
+    public String generateAddString(){
+        for(int i = (SIZE - inputString.length()); i>0; i--)
+            addString += "0";
+        return addString;
+    }
+
+    public  void generateGamma(){
         Random random = new Random();
         for(int i=0; i<inputArr.length; i++)
             gamma[i] = random.nextInt(2);
     }
 
-    public static void addGamma(int[] inputArrWithGamma, int[] inputArr, int[] gamma){
+    public  void addGamma(){
         for(int i=0; i<gamma.length; i++)
             inputArrWithGamma[i] = inputArr[i]^gamma[i];
     }
 
-    public void removeGamma(int[] noGamma, int[] gammaUnshifted, int[] gamma){
+    public void removeGamma(){
         for(int i=0; i<noGamma.length; i++)
             noGamma[i] = gammaUnshifted[i]^gamma[i];
     }
 
-    public static void shift(int[] inputArrWithGammaShifted, int[] inputArrWithGamma){
+    public void shift(){
         for (int i = 0; i < inputArrWithGamma.length - MOVE; i++)
             inputArrWithGammaShifted[i] = inputArrWithGamma[i + MOVE];
 
@@ -47,7 +68,7 @@ public class Math {
             inputArrWithGammaShifted[i] = inputArrWithGamma[n];
     }
 
-    public static void unshift(int[] gammaUnshifted, int[] inputArrWithGammaShifted){
+    public  void unshift(){
         for (int n = gammaUnshifted.length - MOVE, i = 0; n < gammaUnshifted.length; i++, n++)
             gammaUnshifted[i] = inputArrWithGammaShifted[n];
 
@@ -56,6 +77,8 @@ public class Math {
     }
 
     Math(){
+        SIZE = 8;
+        MOVE = 3;
         addString = "";
         inputArr = new int[SIZE];
         gamma = new int[SIZE];
@@ -63,5 +86,27 @@ public class Math {
         inputArrWithGammaShifted = new int[SIZE];
         gammaUnshifted = new int[SIZE];
         noGamma = new int[SIZE];
+    }
+
+    Math(int size, int move){
+        SIZE = size;
+        MOVE = move;
+        addString = "";
+        inputArr = new int[SIZE];
+        gamma = new int[SIZE];
+        inputArrWithGamma = new int[SIZE];
+        inputArrWithGammaShifted = new int[SIZE];
+        gammaUnshifted = new int[SIZE];
+        noGamma = new int[SIZE];
+    }
+
+    public static void main(String[] args){
+        System.out.println();
+        Math math = new Math();
+
+        System.out.println(math.getMOVE());
+        System.out.println(math.getSIZE());
+        math.setAddString("My awesome add string");
+        System.out.println(math.getAddString());
     }
 }
