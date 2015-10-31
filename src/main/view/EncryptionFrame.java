@@ -64,7 +64,6 @@ public class EncryptionFrame extends JFrame {
 
         String encrypted = Encryptor.encrypt(input);
 
-        gammaTextField.setText(Arrays.toString(EncryptionProtocol.gamma));
         encryptedPhraseTextField.setText(encrypted);
     }
 
