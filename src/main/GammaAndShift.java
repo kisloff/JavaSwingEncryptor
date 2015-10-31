@@ -2,7 +2,6 @@ package main;
 
 import javax.swing.*;
 import java.util.Arrays;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,7 +17,7 @@ public class GammaAndShift extends JFrame{
     private JTextField gammaUnshiftedTextField;
     private JButton cleanButton;
 
-    private static int MOVE = 3;
+    /*private static int MOVE = 3;
     private static int SIZE = 8;
 
     private String inputString;
@@ -28,7 +27,7 @@ public class GammaAndShift extends JFrame{
     private int[] inputArrWithGamma;
     private int[] inputArrWithGammaShifted;
     private int[] gammaUnshifted;
-    private int[] noGamma;
+    private int[] noGamma;*/
 
     public void clearAllTextFields(){
         sourcePhraseTextField.setText("");
@@ -40,7 +39,7 @@ public class GammaAndShift extends JFrame{
         sourcePhraseTextField.requestFocus();
     }
 
-    public void generateAddString(String inputString){
+    /*public void generateAddString(String inputString){
         for(int i = (SIZE - inputString.length()); i>0; i--)
             addString += "0";
     }
@@ -75,19 +74,20 @@ public class GammaAndShift extends JFrame{
 
             for (int n = 0, i = MOVE; n < gammaUnshifted.length - MOVE; i++, n++)
                 gammaUnshifted[i] = inputArrWithGammaShifted[n];
-    }
+    }*/
     
     GammaAndShift(){
         super("GammaAndShift");
         setContentPane(basePanel);
+        Math math = new Math();
 
-        addString = "";
+        /*addString = "";
         inputArr = new int[SIZE];
         gamma = new int[SIZE];
         inputArrWithGamma = new int[SIZE];
         inputArrWithGammaShifted = new int[SIZE];
         gammaUnshifted = new int[SIZE];
-        noGamma = new int[SIZE];
+        noGamma = new int[SIZE];*/
 
         encryptButton.addActionListener(e -> {
                 try {
@@ -95,7 +95,7 @@ public class GammaAndShift extends JFrame{
                         throw new IllegalArgumentException("1");
                     }
 
-                    inputString = sourcePhraseTextField.getText();
+                    math.inputString = sourcePhraseTextField.getText();
 
                     for (int i = 0; i < inputString.length(); i++) {
                         if (!Character.isDigit(inputString.charAt(i))) {
